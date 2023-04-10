@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "482063921592",
+    "firebase_url": "https://real-estate-app-88899-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "real-estate-app-88899",
+    "storage_bucket": "real-estate-app-88899.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:482063921592:android:823ae92b09532e8b6a1f4d",
+        "android_client_info": {
+          "package_name": "com.example.admin_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "482063921592-d3qq3fu33rf9vovlrmcloocporfu42n2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBvS0R_W67FyBRoCS8yFHmYTujYkPchHlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "482063921592-d3qq3fu33rf9vovlrmcloocporfu42n2.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "482063921592-ghptodqdq4msmdq35deeaqrftp56sdl2.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.adminProject"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
