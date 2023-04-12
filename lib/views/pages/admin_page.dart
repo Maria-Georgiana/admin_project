@@ -3,6 +3,7 @@ import 'package:admin_project/constants/constant_strings.dart';
 import 'package:admin_project/controllers/form_controllers.dart';
 import 'package:admin_project/models/house_model.dart';
 import 'package:admin_project/views/authenticate/sing_in.dart';
+import 'package:admin_project/views/pages/user_page.dart';
 import 'package:admin_project/views/widgets/text_field_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,16 +49,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Pressed menu button')));
-            },
-            icon: const Icon(
-              Icons.menu_open,
-              color: ConstantColors.secondary,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminHomePage()),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Pressed refresh button')));
             },
@@ -66,7 +61,20 @@ class _AdminHomePageState extends State<AdminHomePage> {
               color: ConstantColors.secondary,
             ),
           ),
-          ElevatedButton(
+          IconButton(
+            onPressed: () async {
+              await FirebaseAuth.instance.signOut();
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const UserHomePage()),
+              );
+            },
+            icon: const Icon(
+              Icons.format_list_bulleted_rounded,
+              color: ConstantColors.secondary,
+            ),
+          ),
+          IconButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
@@ -74,10 +82,10 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 MaterialPageRoute(builder: (context) => const SingIn()),
               );
             },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: ConstantColors.secondary,
             ),
-            child: const Text('Logout'),
           ),
         ],
       ),
@@ -139,28 +147,13 @@ class _AdminHomePageState extends State<AdminHomePage> {
             child: TextFieldWidget(
               controller: _formControllers.imagePathController,
               hintText: ConstantStrings.houseImagePath,
-              maxLength: 100,
+              maxLength: 200,
               maxLines: 1,
             ),
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // GestureDetector(
-              //   onTap: () {
-              //     pickAnImage();
-              //   },
-              //   child: Container(
-              //     color: ConstantColors.secondary,
-              //     height: 50,
-              //     width: 80,
-              //     child: const Icon(
-              //       Icons.add_a_photo_outlined,
-              //       size: 42,
-              //       color: Colors.white54,
-              //     ),
-              //   ),
-              // ),
               GestureDetector(
                 //button
                 onTap: () {
@@ -174,11 +167,6 @@ class _AdminHomePageState extends State<AdminHomePage> {
                   color: ConstantColors.secondary,
                   height: 50,
                   width: 80,
-                  // decoration: BoxDecoration(
-                  //   border: BoxBorder(
-                  //     color:ConstantColors.primary
-                  //   )
-                  // ),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: const [

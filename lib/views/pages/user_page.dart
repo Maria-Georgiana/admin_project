@@ -1,8 +1,8 @@
-import 'dart:math';
-
 import 'package:admin_project/constants/constant_colors.dart';
 import 'package:admin_project/models/house_model.dart';
 import 'package:admin_project/views/authenticate/sing_in.dart';
+import 'package:admin_project/views/pages/admin_page.dart';
+import 'package:admin_project/views/widgets/filter_button.dart';
 import 'package:admin_project/views/widgets/filter_widget.dart';
 import 'package:admin_project/views/widgets/product_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,9 +20,10 @@ class UserHomePage extends StatefulWidget {
 class _MyHomePageState extends State<UserHomePage> {
   final _ref = FirebaseFirestore.instance.collection('products');
   late Stream<QuerySnapshot> _streamHouseItems;
-  final filterList = ['<\$100.000', '1 bedroom', '2 bedrooms', '2 kitchens'];
+  final filterList = ['<\$100000', '1 bedroom', '2 bedrooms', '3 bedrooms'];
   List<House> houseList = [];
-
+  late List<House> _filteredHouses;
+  bool _isPriceClicked = false;
   bool isClicked = false;
 
   onPressed() {
@@ -39,6 +40,29 @@ class _MyHomePageState extends State<UserHomePage> {
   void initState() {
     super.initState();
     _streamHouseItems = _ref.snapshots();
+    _filteredHouses = houseList;
+  }
+
+  String? _selectedFilter;
+
+  void _applyFilter(String filter) {
+    setState(() {
+      _selectedFilter = filter;
+    });
+  }
+
+  List<House> filterHouses(List<House> houseList, String filterText) {
+    List<House> filteredHouse = houseList;
+    if (filterText.startsWith('<\$')) {
+      int price = int.parse(filterText.substring(2));
+      filteredHouse = filteredHouse.where((p) => p.price < price).toList();
+    } else if (filterText.endsWith('bedrooms') ||
+        filterText.endsWith('bedroom')) {
+      int bedrooms = int.parse(filterText[0]);
+      filteredHouse =
+          filteredHouse.where((p) => p.bedrooms == bedrooms).toList();
+    }
+    return filteredHouse;
   }
 
   Future<void> _loadHouses() async {
@@ -71,16 +95,10 @@ class _MyHomePageState extends State<UserHomePage> {
         actions: [
           IconButton(
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Pressed menu button')));
-            },
-            icon: const Icon(
-              Icons.menu_open,
-              color: ConstantColors.secondary,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const UserHomePage()),
+              );
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Pressed refresh button')));
             },
@@ -89,7 +107,19 @@ class _MyHomePageState extends State<UserHomePage> {
               color: ConstantColors.secondary,
             ),
           ),
-          ElevatedButton(
+          IconButton(
+            onPressed: () async {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => const AdminHomePage()),
+              );
+            },
+            icon: const Icon(
+              Icons.add_business,
+              color: ConstantColors.secondary,
+            ),
+          ),
+          IconButton(
             onPressed: () async {
               await FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
@@ -97,10 +127,10 @@ class _MyHomePageState extends State<UserHomePage> {
                 MaterialPageRoute(builder: (context) => const SingIn()),
               );
             },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.black12),
+            icon: const Icon(
+              Icons.logout_rounded,
+              color: ConstantColors.secondary,
             ),
-            child: const Text('Logout'),
           ),
         ],
       ),
@@ -144,24 +174,38 @@ class _MyHomePageState extends State<UserHomePage> {
               //Scroll orizontal
               SizedBox(
                 height: 30,
-                // adaugam mai multe obiecte
                 child: ListView.builder(
                   scrollDirection: Axis.horizontal,
                   itemCount: filterList.length,
                   itemBuilder: (context, index) {
                     return FilterWidget(
                       filterText: filterList[index],
-                      isClicked: isClicked ? true : false,
+                      isClicked: filterList[index] == _selectedFilter,
+                      onTap: () {
+                        setState(() {
+                          _applyFilter(filterList[index]);
+                          _filteredHouses = filterHouses(houseList, _selectedFilter!);
+                          ListView.builder(
+                            itemCount: _filteredHouses.length,
+                            itemBuilder: (context, index) {
+                              return ProductWidget(
+                                house: _filteredHouses[index],
+                              );
+                            },
+                          );
+                        });
+                      },
                     );
                   },
                 ),
               ),
-              // const SizedBox(height: 2),
               StreamBuilder<List<House>>(
-                stream: _ref.snapshots().map((querySnapshot) =>
-                    querySnapshot.docs.map((doc) => House.fromJson(doc.data())).toList()
-                ),
-                builder: (BuildContext context, AsyncSnapshot<List<House>> snapshot) {
+                stream: _ref.snapshots().map((querySnapshot) => querySnapshot
+                    .docs
+                    .map((doc) => House.fromJson(doc.data()))
+                    .toList()),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<House>> snapshot) {
                   if (snapshot.hasError) {
                     return Center(child: Text(snapshot.error.toString()));
                   }

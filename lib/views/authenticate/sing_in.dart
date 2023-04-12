@@ -2,7 +2,6 @@ import 'package:admin_project/constants/constant_colors.dart';
 import 'package:admin_project/services/authenticate_service.dart';
 import 'package:admin_project/views/pages/admin_page.dart';
 import 'package:admin_project/views/pages/user_page.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -106,7 +105,7 @@ class _SingInState extends State<SingIn> {
       appBar: AppBar(
         backgroundColor: Colors.black54,
         title: Text(
-          'Log in to Real Estate',
+          'Log in 🏕 CasaLoco',
           style: GoogleFonts.acme(
             fontSize: 24,
             fontWeight: FontWeight.w400,
@@ -115,110 +114,118 @@ class _SingInState extends State<SingIn> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text(
-                  'Log in',
-                  style: GoogleFonts.acme(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black54,
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                TextFormField(
-                  // Assign email controller
-                  controller: _emailController,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your email!';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Please enter a valid email address!';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Email',
-                    focusColor: Colors.black54,
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.deepOrange, width: 2),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  SizedBox(
+                    height: 100,
+                    child: Center(
+                      child: Text(
+                        'Log in',
+                        style: GoogleFonts.acme(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black54,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                TextFormField(
-                  // Assign password controller
-                  controller: _passwordController,
-                  obscureText: true,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter your password!';
-                    }
-                    if (value.length < 6) {
-                      return 'Your password must be at least 6 characters long!';
-                    }
-                    return null;
-                  },
-                  decoration: const InputDecoration(
-                    hintText: 'Password',
-                    focusColor: Colors.black54,
-                    focusedBorder: UnderlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.deepOrange, width: 2),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  TextFormField(
+                    // Assign email controller
+                    controller: _emailController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email!';
+                      }
+                      if (!value.contains('@')) {
+                        return 'Please enter a valid email address!';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Email',
+                      focusColor: Colors.black54,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.deepOrange, width: 2),
+                      ),
                     ),
                   ),
-                ),
-                RadioListTile(
-                  title: const Text('User'),
-                  value: 1,
-                  groupValue: _role,
-                  onChanged: (value) {
-                    setState(() {
-                      _role = value as int;
-                      onRoleChanged(_role);
-                    });
-                  },
-                ),
-                RadioListTile(
-                  title: const Text('Admin'),
-                  value: 2,
-                  groupValue: _role,
-                  onChanged: (value) {
-                    setState(() {
-                      _role = value as int;
-                      onRoleChanged(_role);
-                    });
-                  },
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepOrange,
+                  TextFormField(
+                    // Assign password controller
+                    controller: _passwordController,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    obscureText: true,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your password!';
+                      }
+                      if (value.length < 6) {
+                        return 'Your password must be at least 6 characters long!';
+                      }
+                      return null;
+                    },
+                    decoration: const InputDecoration(
+                      hintText: 'Password',
+                      focusColor: Colors.black54,
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.deepOrange, width: 2),
+                      ),
+                    ),
                   ),
-                  onPressed: () => handleSubmit(),
-                  child: _loading
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(
-                            color: Colors.black87,
-                            strokeWidth: 2,
-                          ),
-                        )
-                      : Text(_buttonText()),
-                ),
-              ],
+                  RadioListTile(
+                    title: const Text('User'),
+                    value: 1,
+                    groupValue: _role,
+                    onChanged: (value) {
+                      setState(() {
+                        _role = value as int;
+                        onRoleChanged(_role);
+                      });
+                    },
+                  ),
+                  RadioListTile(
+                    title: const Text('Admin'),
+                    value: 2,
+                    groupValue: _role,
+                    onChanged: (value) {
+                      setState(() {
+                        _role = value as int;
+                        onRoleChanged(_role);
+                      });
+                    },
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepOrange,
+                    ),
+                    onPressed: () => handleSubmit(),
+                    child: _loading
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                              color: Colors.black87,
+                              strokeWidth: 2,
+                            ),
+                          )
+                        : Text(_buttonText()),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
