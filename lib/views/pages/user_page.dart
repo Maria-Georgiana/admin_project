@@ -2,7 +2,6 @@ import 'package:admin_project/constants/constant_colors.dart';
 import 'package:admin_project/models/house_model.dart';
 import 'package:admin_project/views/authenticate/sing_in.dart';
 import 'package:admin_project/views/pages/admin_page.dart';
-import 'package:admin_project/views/widgets/filter_button.dart';
 import 'package:admin_project/views/widgets/filter_widget.dart';
 import 'package:admin_project/views/widgets/product_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

@@ -29,21 +29,6 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: ConstantStrings.title,
-      // home: StreamBuilder<User?>(
-        // stream: FirebaseAuth.instance.authStateChanges(),
-        // builder: (context, snapshot) {
-        //   // if user is logged in
-        //   if (snapshot.hasData) {
-        //     User? user = snapshot.data;
-        //     // Check if user has admin role
-        //     if (user != null && user.uid == "admin-uid") {
-        //       return AdminHomePage();
-        //     }
-        //     // Otherwise, user has user role
-        //     return UserHomePage();
-        //   }
-        //   // if user is not logged in
-        //   else {
         home: SingIn()
           // }
         // },
